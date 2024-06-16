@@ -106,12 +106,18 @@ namespace Server_.Controllers
         }
 
         // Method to accept an appointment
-        // [HttpPost("accept/{appointmentId}")]
-        // public ActionResult AcceptAppointment(int appointmentId)
-        // {
-        //     var appointment = _context.Appointments.FirstOrDefault(a => a.AppointmentId == appointmentId);
+        [HttpGet("accept/{appointmentId}")]
+        public ActionResult AcceptAppointment(int appointmentId)
+        {
+            var appointment = _context.Appointments.FirstOrDefault(a => a.AppointmentId == appointmentId);
 
+            if (appointment == null) return BadRequest("Appointment with the given id doesn't exists");
 
-        // }
+            // Update the status
+            appointment.Status = "accepted";
+            _context.SaveChanges();
+
+            return Ok(appointment);
+        }
     }
 }
