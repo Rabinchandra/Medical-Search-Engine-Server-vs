@@ -87,6 +87,31 @@ namespace Server_.Controllers
             }
         }
 
+        [HttpGet("patient/details/{id}")]
+        public IActionResult GetAppointmentDetailsForPatient(string id)
+        {
+            var result = from appointment in _context.Appointments
+                         join doctor in _context.Doctors on appointment.DoctorId equals doctor.DoctorId
+                         join patient in _context.Patients on appointment.PatientId equals patient.PatientId
+                         where patient.PatientId == id
+                         select new
+                         {
+                             AppointmentId = appointment.AppointmentId,
+                             AppointmentDate = appointment.AppointmentDate,
+                             AppointmentTime = appointment.AppointmentTime,
+                             Status = appointment.Status,
+                             DoctorName = doctor.Name,
+                             PatientName = patient.Name,
+                             DoctorId = doctor.DoctorId,
+                             PatientId = patient.PatientId,
+                             PatientImgUrl = patient.ProfileImgUrl,
+                             PatientContact = patient.ContactNumber,
+                             Purpose = appointment.Purpose,
+                             Notes = appointment.Notes
+                         };
+            return Ok(result);
+        }
+
         [HttpGet("doctor/{id}")]
         // Get appointment for a patient
         public IActionResult GetAppointmentForDoctor(string id)
