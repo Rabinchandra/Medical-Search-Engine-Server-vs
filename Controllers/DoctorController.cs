@@ -10,10 +10,12 @@ namespace Server_.Controllers
     public class DoctorController : ControllerBase
     {
         private readonly MedicalSearchEngineContext _context;
+        private readonly FirebaseService _firebaseService;
 
         public DoctorController()
         {
             _context = new MedicalSearchEngineContext();
+            _firebaseService = new FirebaseService();
         }
 
         [HttpGet]
@@ -33,9 +35,10 @@ namespace Server_.Controllers
         }
 
         [HttpDelete("{id}")]
-        public ActionResult RemoveDoctor(string id)
+        public async Task<ActionResult> RemoveDoctor(string id)
         {
             var foundDoctor = _context.Doctors.FirstOrDefault(d => d.DoctorId == id);
+
 
             // if not found
             if (foundDoctor == null) return NotFound("Doctor with the given id doesn't exists");
@@ -53,9 +56,12 @@ namespace Server_.Controllers
 
             if (doctorRoles != null) _context.UserRoles.Remove(doctorRoles);
 
+            // Remove the doctor from the firebase
+            var result = await _firebaseService.DeleteUser(id);
+
             // Remove the doctor from patient table
             _context.Doctors.Remove(foundDoctor);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }

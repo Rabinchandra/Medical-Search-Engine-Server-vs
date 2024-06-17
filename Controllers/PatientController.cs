@@ -12,9 +12,11 @@ namespace Server_.Controllers
     {
         private readonly MedicalSearchEngineContext _context;
 
+
         public PatientController()
         {
             _context = new MedicalSearchEngineContext();
+
         }
 
         [HttpGet]
@@ -60,6 +62,7 @@ namespace Server_.Controllers
 
             return NoContent();
         }
+
 
         [HttpPatch("{id}")]
         public ActionResult UpdatePatient(string id, [FromBody] JsonPatchDocument<Patient> patchDoc)
