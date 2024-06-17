@@ -2,6 +2,8 @@
 bin/
 obj/
 
+ServiceFiles/
+
 # User-specific files
 *.rsuser
 *.suo
@@ -135,4 +137,4 @@ npm-debug.log
 # Azure DevOps
 .vsts/
 
-ServiceFiles/medical-search-engine-92f3b-cae392eb4c4d.json
+
