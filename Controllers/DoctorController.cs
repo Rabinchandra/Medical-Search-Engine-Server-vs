@@ -39,7 +39,6 @@ namespace Server_.Controllers
         {
             var foundDoctor = _context.Doctors.FirstOrDefault(d => d.DoctorId == id);
 
-
             // if not found
             if (foundDoctor == null) return NotFound("Doctor with the given id doesn't exists");
 

@@ -11,12 +11,12 @@ namespace Server_.Controllers
     public class PatientController : ControllerBase
     {
         private readonly MedicalSearchEngineContext _context;
-
+        private readonly FirebaseService _firebaseService;
 
         public PatientController()
         {
             _context = new MedicalSearchEngineContext();
-
+            _firebaseService = new FirebaseService();
         }
 
         [HttpGet]
@@ -36,7 +36,7 @@ namespace Server_.Controllers
         }
 
         [HttpDelete("{id}")]
-        public ActionResult RemovePatient(string id)
+        public async Task<ActionResult> RemovePatient(string id)
         {
             var foundPatient = _context.Patients.FirstOrDefault(p => p.PatientId == id);
 
@@ -56,9 +56,12 @@ namespace Server_.Controllers
 
             if (patientRoles != null) _context.UserRoles.Remove(patientRoles);
 
+            // Remove the doctor from the firebase
+            var result = await _firebaseService.DeleteUser(id);
+
             // Remove the patient from patient table
             _context.Patients.Remove(foundPatient);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
