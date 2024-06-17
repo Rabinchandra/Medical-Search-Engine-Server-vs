@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Server_.Models.EntityModel;
 
 namespace Server_.Controllers
@@ -40,6 +41,20 @@ namespace Server_.Controllers
             // if not found
             if (foundPatient == null) return NotFound("Patient with the given id doesn't exists");
 
+            // Reemove the patient from appointment list table
+            var patientAppointments = _context.Appointments.Where(a => a.PatientId == foundPatient.PatientId);
+
+            foreach (var appointment in patientAppointments)
+            {
+                _context.Appointments.Remove(appointment);
+            }
+
+            // Remove the patient from user roles table 
+            var patientRoles = _context.UserRoles.FirstOrDefault(ur => ur.UserId == foundPatient.PatientId);
+
+            if (patientRoles != null) _context.UserRoles.Remove(patientRoles);
+
+            // Remove the patient from patient table
             _context.Patients.Remove(foundPatient);
             _context.SaveChanges();
 
