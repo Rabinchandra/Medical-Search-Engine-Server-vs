@@ -35,12 +35,26 @@ namespace Server_.Controllers
         [HttpDelete("{id}")]
         public ActionResult RemoveDoctor(string id)
         {
-            var doctor = _context.Doctors.FirstOrDefault(d => d.DoctorId == id);
+            var foundDoctor = _context.Doctors.FirstOrDefault(d => d.DoctorId == id);
 
             // if not found
-            if (doctor == null) return NotFound("Doctor with the given id doesn't exists");
+            if (foundDoctor == null) return NotFound("Doctor with the given id doesn't exists");
 
-            _context.Doctors.Remove(doctor);
+            // Reemove the doctor from appointment list table
+            var doctorAppointments = _context.Appointments.Where(d => d.DoctorId == id);
+
+            foreach (var appointment in doctorAppointments)
+            {
+                _context.Appointments.Remove(appointment);
+            }
+
+            // Remove the doctor from user roles table 
+            var doctorRoles = _context.UserRoles.FirstOrDefault(ur => ur.UserId == foundDoctor.DoctorId);
+
+            if (doctorRoles != null) _context.UserRoles.Remove(doctorRoles);
+
+            // Remove the doctor from patient table
+            _context.Doctors.Remove(foundDoctor);
             _context.SaveChanges();
 
             return NoContent();
