@@ -22,7 +22,7 @@ namespace Server_.Controllers
             return Ok(_context.Doctors.ToList());
         }
 
-        [HttpGet("id")]
+        [HttpGet("{id}")]
         public ActionResult GetOneDoctor(string id)
         {
             var doctor = _context.Doctors.FirstOrDefault(d => d.DoctorId == id);
@@ -32,7 +32,7 @@ namespace Server_.Controllers
             return Ok(doctor);
         }
 
-        [HttpDelete("id")]
+        [HttpDelete("{id}")]
         public ActionResult RemoveDoctor(string id)
         {
             var doctor = _context.Doctors.FirstOrDefault(d => d.DoctorId == id);
@@ -46,7 +46,7 @@ namespace Server_.Controllers
             return NoContent();
         }
 
-        [HttpPatch("id")]
+        [HttpPatch("{id}")]
         public ActionResult PatchDoctor(string id, [FromBody] JsonPatchDocument<Doctor> patchDoc)
         {
             var doctor = _context.Doctors.FirstOrDefault(d => d.DoctorId == id);

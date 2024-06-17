@@ -22,7 +22,7 @@ namespace Server_.Controllers
             return Ok(_context.Patients.ToList());
         }
 
-        [HttpGet("id")]
+        [HttpGet("{id}")]
         public ActionResult GetOnePatient(string id)
         {
             var foundPatient = _context.Patients.FirstOrDefault(p => p.PatientId == id);
